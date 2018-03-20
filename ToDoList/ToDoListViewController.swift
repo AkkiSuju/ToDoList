@@ -11,11 +11,37 @@ import UIKit
 class ToDoListViewController: UITableViewController
 {
     var itemArray = ["Item One", "Item Two", "Item Three"]
+    
+    
+    /* UserDefaults is an interface to the user's
+     default DB, where you store key-value pairs
+     persistently across invocations of your app
+     on a given device.
+     
+     One imp thing to mention here is that User
+     Defaults get saved in a plist file. Therefore,
+     everything you save in User Defaults should be
+     in a key-value pair. */
+    
+    let defaults = UserDefaults.standard
 
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        
+        /* Here we are saving the value from the
+         User Defaults to the itemArray.  Also, we
+         are doing Optional Binding just to check
+         if the ToDoListArray exists.
+         
+         We are casting User Defaults as an array of
+         Strings*/
+        
+        if let items = defaults.array(forKey: "ToDoListArray") as? [String]
+        {
+            itemArray = items
+        }
     }
     
     
@@ -118,6 +144,17 @@ class ToDoListViewController: UITableViewController
             // adding the new item to the list/array
             self.itemArray.append(textField.text!)
             
+            
+            /* Here we are adding the updated array to the
+             User Default. The below statement provides many
+             options once we start typing set.  We have
+             to chose this option -
+             set(value: Any?, forKey: String)
+             
+             forKey would be a name that will identify the array
+             inside the User Default. */
+            
+            self.defaults.set(self.itemArray, forKey: "ToDoListArray")
             
             /* after adding new item, we are reloading the
              table to see the new item. */
