@@ -10,7 +10,7 @@ import UIKit
 
 class ToDoListViewController: UITableViewController
 {
-    let itemArray = ["Item One", "Item Two", "Item Three"]
+    var itemArray = ["Item One", "Item Two", "Item Three"]
 
     override func viewDidLoad()
     {
@@ -90,7 +90,70 @@ class ToDoListViewController: UITableViewController
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
- 
+    
+    
+    
+    
+    /********************************/
+    
+    //MARK: - Add new items
+    
+    
+    @IBAction func addButtonPressed(_ sender: UIBarButtonItem)
+    {
+        /* Creating a variable of UITextField type, and the
+         reason is given a little below. */
+        
+        var textField = UITextField()
+        
+        /* When user clicks on the Add New Item button,
+         we want to open a pop-up or a UI Alert Controller
+         containing a Text Field to add a new item that we
+         could add to our itemArray. */
+        
+        let alert = UIAlertController(title: "Add New Item", message: "", preferredStyle: .alert)
+        
+        let action = UIAlertAction(title: "Add Item", style: .default) { (UIAlertAction) in
+            
+            // adding the new item to the list/array
+            self.itemArray.append(textField.text!)
+            
+            
+            /* after adding new item, we are reloading the
+             table to see the new item. */
+            
+            self.tableView.reloadData()
+        }
+        
+        
+        /* This is to put text field inside pop-up window.
+         The method will provide you a placeholder for its
+         argument.  Simply select the placeholder and press
+         Enter to enter a Closure.
+         
+         It will provide two placeholders - UITextField and
+         code.  Give a name to the UITextField (alertTextField
+         in this case).  Delete the code placeholder and give
+         your own code. */
+        
+        alert.addTextField { (alertTextField) in
+            alertTextField.placeholder = "Create new item"
+            
+            
+            /* Because the alertTextField has a scope just
+             within this closure therefore we have declared
+             a variable of TextField type above, and here
+             storing the value of alertTextField to it, so
+             that we can use it anywhere within
+             addButtonPressed method. */
+            
+            textField = alertTextField
+        }
+        
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
+    }
+    
 
 }
 
