@@ -10,25 +10,33 @@ import UIKit
 
 class ToDoListViewController: UITableViewController
 {
-    var itemArray = ["Item One", "Item Two", "Item Three"]
+    /* Declaring an array of type Item.  Item is
+     a user-defined class stored in Data Model
+     folder. */
+    
+    var itemArray = [Item]()
     
     
-    /* UserDefaults is an interface to the user's
-     default DB, where you store key-value pairs
-     persistently across invocations of your app
-     on a given device.
-     
-     One imp thing to mention here is that User
-     Defaults get saved in a plist file. Therefore,
-     everything you save in User Defaults should be
-     in a key-value pair. */
+    // Creating a variable of UserDefaults type
     
     let defaults = UserDefaults.standard
+    
 
     override func viewDidLoad()
     {
         super.viewDidLoad()
         
+        let newItem = Item()
+        newItem.title = "Item One"
+        itemArray.append(newItem)
+        
+        let newItem2 = Item()
+        newItem2.title = "Item Two"
+        itemArray.append(newItem2)
+        
+        let newItem3 = Item()
+        newItem3.title = "Item Three"
+        itemArray.append(newItem3)
         
         /* Here we are saving the value from the
          User Defaults to the itemArray.  Also, we
@@ -38,7 +46,7 @@ class ToDoListViewController: UITableViewController
          We are casting User Defaults as an array of
          Strings*/
         
-        if let items = defaults.array(forKey: "ToDoListArray") as? [String]
+        if let items = defaults.array(forKey: "ToDoListArray") as? [Item]
         {
             itemArray = items
         }
@@ -71,7 +79,14 @@ class ToDoListViewController: UITableViewController
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
         
-        cell.textLabel?.text = itemArray[indexPath.row]
+        let item = itemArray[indexPath.row]
+        
+        cell.textLabel?.text = item.title
+        
+        
+        //Using Ternary Operator to set checkmark
+        
+        cell.accessoryType = item.done ? .checkmark : .none
         
         return cell
 
@@ -92,25 +107,24 @@ class ToDoListViewController: UITableViewController
     {
         //print(itemArray[indexPath.row])
         
-        /* this is to put a checkmark against the row
-          that user clicks. And, if user clicks it again
-         the checkmark will get removed. */
+        /* Here we are using not operator (!).
+         This will set the DONE property (we have
+         defined this property in ITEM class) for the
+         current item just to opposite of what it is
+         already set.  It means, if DONE property is
+         TRUE then it will set to FALSE, and vice-versa.
+        */
         
-        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark
-        {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-        }
-        else
-        {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        }
+        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+        
+        tableView.reloadData()
         
         /* By default, on selecting a row, it gets
          permanently selected until we click on
          another row, and also the background colour
          changes.
          
-         This statement will select the row for a
+         This statement will select the row just for a
          moment on clicking, and then will bring it
          back to normal. */
         
@@ -141,8 +155,12 @@ class ToDoListViewController: UITableViewController
         
         let action = UIAlertAction(title: "Add Item", style: .default) { (UIAlertAction) in
             
+            
             // adding the new item to the list/array
-            self.itemArray.append(textField.text!)
+            
+            let newItem = Item()
+            newItem.title = textField.text!
+            self.itemArray.append(newItem)
             
             
             /* Here we are adding the updated array to the
